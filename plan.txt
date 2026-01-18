@@ -1,0 +1,117 @@
+Project Requirements
+A. Functional Requirements
+
+Register Riders
+Register Drivers
+Show available drivers
+Request a ride
+Match ride to driver using a strategy
+Calculate fare using a pricing strategy
+
+Track ride status:
+REQUESTED
+ASSIGNED
+COMPLETED
+CANCELLED
+
+B. Non-Functional Requirements
+Easily extendable pricing algorithm
+Easily change driver matching logic
+Low coupling between services
+Maintainable and readable code
+
+C. Domain Entities
+Package → model/
+
+Core Classes
+Rider
+id
+name
+location
+
+Driver
+id
+name
+currentLocation
+available (boolean)
+
+Ride
+id
+rider
+driver
+distance
+status
+
+FareReceipt
+rideId
+amount
+generatedAt
+
+Enums
+RideStatus
+
+VehicleType (BIKE, AUTO, CAR)
+
+D. Strategy & Composition Design
+1. Ride Matching Strategy
+public interface RideMatchingStrategy {
+
+Driver findDriver(Rider rider, List<Driver> drivers);
+
+}
+
+Implementations:
+NearestDriverStrategy
+LeastActiveDriverStrategy
+
+2. Fare Calculation Strategy
+public interface FareStrategy {
+
+double calculateFare(Ride ride);
+
+}
+
+Implementations:
+DefaultFareStrategy
+PeakHourFareStrategy
+
+These strategies are injected into the RideService constructor.
+
+This ensures:
+DIP compliance
+OCP compliance
+
+Composition over inheritance
+
+E. Service Layer
+Package → service/
+
+RiderService
+Register riders
+Get rider by ID
+
+DriverService
+Register drivers
+Update availability
+List available drivers
+
+RideService
+Request a ride
+Assign driver using RideMatchingStrategy
+Calculate fare using FareStrategy
+Complete ride
+
+F. Console Application (Menu)
+Main menu in Main.java:
+Add Rider
+Add Driver
+View Available Drivers
+Request Ride
+Complete Ride
+View Rides 
+Exit
+
+Each option must:
+Use service-layer only
+Catch invalid input
+Avoid tightly-coupled logic
